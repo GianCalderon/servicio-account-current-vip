@@ -1,4 +1,4 @@
-package com.springboot.currentAccountPersonalVip.controller;
+package com.springboot.currentAccountVip.controller;
 
 import java.net.URI;
 
@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.springboot.currentAccountPersonalVip.document.CurrentAccountVip;
-import com.springboot.currentAccountPersonalVip.dto.CurrentAccountVipDto;
-import com.springboot.currentAccountPersonalVip.service.CurrentAccountVipImpl;
+import com.springboot.currentAccountVip.document.CurrentAccountVip;
+import com.springboot.currentAccountVip.dto.AccountDto;
+import com.springboot.currentAccountVip.dto.CurrentAccountVipDto;
+import com.springboot.currentAccountVip.dto.PersonalVipDto;
+import com.springboot.currentAccountVip.service.CurrentAccountVipImpl;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -32,6 +34,8 @@ public class CurrentAccountVipController {
 
 	@Autowired
 	CurrentAccountVipImpl service;
+	
+
 
 	@GetMapping
 	public Mono<ResponseEntity<Flux<CurrentAccountVip>>> toList() {
@@ -42,8 +46,6 @@ public class CurrentAccountVipController {
 
 	@GetMapping("/{id}")
 	public Mono<ResponseEntity<CurrentAccountVip>> search(@PathVariable String id) {
-		
-		LOGGER.info("NUMERO DE CUENTA SavinAcount :--->"+id);
 
 		return service.findById(id).map(s -> ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(s))
 				.defaultIfEmpty(ResponseEntity.notFound().build());
@@ -54,7 +56,7 @@ public class CurrentAccountVipController {
 	public Mono<ResponseEntity<CurrentAccountVip>> save(@RequestBody CurrentAccountVip currentAccountVip) {
 
 		return service.save(currentAccountVip)
-				.map(s -> ResponseEntity.created(URI.create("/api/currentAccountVip".concat(s.getId())))
+				.map(s -> ResponseEntity.created(URI.create("/api/CurrentAccountVip".concat(s.getId())))
 						.contentType(MediaType.APPLICATION_JSON).body(s));
 
 	}
@@ -63,16 +65,14 @@ public class CurrentAccountVipController {
 	public Mono<ResponseEntity<CurrentAccountVip>> update(@RequestBody CurrentAccountVip currentAccountVip,
 			@PathVariable String id) {
 		
-		
-		LOGGER.info("CUENTA PARA ACTUALIZAR :--->"+currentAccountVip.toString());
+		LOGGER.info("Controller ---> :"+currentAccountVip.toString());
 
 		return service.update(currentAccountVip, id)
-				.map(s -> ResponseEntity.created(URI.create("/api/currentAccountVip".concat(s.getId())))
+				.map(s -> ResponseEntity.created(URI.create("/api/CurrentAccountVip".concat(s.getId())))
 						.contentType(MediaType.APPLICATION_JSON).body(s))
 				.defaultIfEmpty(ResponseEntity.notFound().build());
 
 	}
-	
 
 	@DeleteMapping("/{id}")
 	public Mono<ResponseEntity<Void>> delete(@PathVariable String id) {
@@ -84,41 +84,46 @@ public class CurrentAccountVipController {
 	}
 	
 	
-//	OPERACION QUE EXPONEN SERVICIOS
+	
+	// OPERACIONES QUE EXPONEN SERVICIOS
 
-	@PostMapping("/saveDto")
-	public Mono<ResponseEntity<CurrentAccountVipDto>> saveDto(@RequestBody CurrentAccountVipDto currentAccountVipDto) {
+	
+	
+	@PostMapping("/saveHeadline")
+	public Mono<ResponseEntity<PersonalVipDto>> saveHeadline(@RequestBody AccountDto accountDto) {
 
-		LOGGER.info("controller --> "+currentAccountVipDto.toString());
+		LOGGER.info("Controller ---> :"+accountDto.toString());
 
-		return service.saveDto(currentAccountVipDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccountVip"))
-				.contentType(MediaType.APPLICATION_JSON).body(s));
+		return service.saveHeadline(accountDto).map(s -> ResponseEntity.created(URI.create("/api/CurrentAccountVip"))
+				.contentType(MediaType.APPLICATION_JSON).body(s))
+				.defaultIfEmpty(new ResponseEntity<PersonalVipDto>(HttpStatus.CONFLICT));
+
 
 	}
-//	
-//	@PostMapping("/operation")
-//	public Mono<ResponseEntity<SavingsAccount>> operation(@RequestBody OperationDto operationDto) {
-//
-//		LOGGER.info(operationDto.toString());
-//
-//		return service.saveOperation(operationDto).map(s -> ResponseEntity.created(URI.create("/api/savingsAccountPersonalVip"))
-//				.contentType(MediaType.APPLICATION_JSON).body(s));
-//
-//	}
-//	
-//	
-//	@GetMapping("/cuenta/{numAccount}")
-//	public Mono<ResponseEntity<SavingsAccount>> searchByNumDoc(@PathVariable String numAccount) {
-//		
-//		LOGGER.info("NUMERO DE CUENTA :--->"+numAccount);
-//
-//		return service.findByNumAccount(numAccount).map(s -> ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(s))
-//				.defaultIfEmpty(ResponseEntity.notFound().build());
-//
-//	}
+	
+	
+	@PostMapping("/saveHeadlines")
+	public Mono<ResponseEntity<CurrentAccountVipDto>> saveHeadlines(@RequestBody CurrentAccountVipDto currentAccountVipDto) {
+
+		LOGGER.info("Controller ----> "+currentAccountVipDto.toString());
+
+		return service.saveHeadlines(currentAccountVipDto).map(s -> ResponseEntity.created(URI.create("/api/CurrentAccountVip"))
+				.contentType(MediaType.APPLICATION_JSON).body(s))
+				.defaultIfEmpty(new ResponseEntity<CurrentAccountVipDto>(HttpStatus.CONFLICT));
+
+	}
+	
 
 	
 	
-	
+	@GetMapping("/cuenta/{numberAccount}")
+	public Mono<ResponseEntity<CurrentAccountVip>> searchByNumAccount(@PathVariable String numberAccount) {
+		
+		LOGGER.info("NUMERO DE CUENTA :--->"+numberAccount);
+
+		return service.findByNumAccount(numberAccount).map(s -> ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(s))
+				.defaultIfEmpty(ResponseEntity.notFound().build());
+
+	}
 
 }

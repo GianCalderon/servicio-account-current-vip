@@ -1,8 +1,8 @@
-package com.springboot.currentAccountPersonalVip.repo;
+package com.springboot.currentAccountVip.repo;
 
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 
-import com.springboot.currentAccountPersonalVip.document.CurrentAccountVip;
+import com.springboot.currentAccountVip.document.CurrentAccountVip;
 
 import reactor.core.publisher.Mono;
 

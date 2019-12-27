@@ -1,4 +1,4 @@
-package com.springboot.currentAccountPersonalVip.client;
+package com.springboot.currentAccountVip.client;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,16 +12,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.springboot.currentAccountPersonalVip.dto.PersonalVipDto;
+import com.springboot.currentAccountVip.dto.AccountClient;
+import com.springboot.currentAccountVip.dto.PersonalVipDto;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
-public class PersonalClientVip {
+public class PersonalVipClient {
 	
 	
-private static final Logger LOGGER = LoggerFactory.getLogger(PersonalClientVip.class);
+private static final Logger LOGGER = LoggerFactory.getLogger(PersonalVipClient.class);
 	
 	@Autowired
 	private WebClient client;
@@ -48,17 +49,21 @@ private static final Logger LOGGER = LoggerFactory.getLogger(PersonalClientVip.c
 	}
 
 	
+	
 	public Mono<PersonalVipDto> save(PersonalVipDto personalVipDto) {
 		
 		LOGGER.info("listo a enviar: "+personalVipDto.toString());
 		
-		return client.post()
+		return client.post().uri("/guardar")
 			   .accept(MediaType.APPLICATION_JSON)
 			   .contentType(MediaType.APPLICATION_JSON)
 		       .body(BodyInserters.fromValue(personalVipDto))
 			   .retrieve()
 			   .bodyToMono(PersonalVipDto.class);
-
+		
+		
+		
+		
 	}
 
 	public Mono<Void> delete(String id) {
@@ -71,12 +76,36 @@ private static final Logger LOGGER = LoggerFactory.getLogger(PersonalClientVip.c
 
 	public Mono<PersonalVipDto> update(PersonalVipDto personalVipDto, String id) {
 		
-		return client.post()
+		LOGGER.info("listo enviar Actualizar: "+personalVipDto.toString());
+		
+		return client.put()
+				   .uri("/{id}",Collections.singletonMap("id",id))
 				   .accept(MediaType.APPLICATION_JSON)
 				   .contentType(MediaType.APPLICATION_JSON)
 				   .syncBody(personalVipDto)
 				   .retrieve()
 				   .bodyToMono(PersonalVipDto.class);
 	}
+	
+	
+	public Mono<PersonalVipDto> findByNumDoc(String dni) {
+		
+	
+		return client.get()
+				.uri("/doc/{dni}",Collections.singletonMap("dni",dni))
+				.accept(MediaType.APPLICATION_JSON)
+				.retrieve()
+				.bodyToMono(PersonalVipDto.class);
+		        
+	}
+	
+	public Flux<AccountClient> extractAccounts(String dni) {
 
+		return client.get()
+				.uri("/valid/{dni}",Collections.singletonMap("dni",dni))
+				.accept(MediaType.APPLICATION_JSON)
+				.retrieve()
+				.bodyToFlux(AccountClient.class);
+			
+	}
 }

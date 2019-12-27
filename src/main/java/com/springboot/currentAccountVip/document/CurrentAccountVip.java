@@ -1,4 +1,4 @@
-package com.springboot.currentAccountPersonalVip.document;
+package com.springboot.currentAccountVip.document;
 
 import java.util.Date;
 import java.util.List;
@@ -24,7 +24,7 @@ public class CurrentAccountVip {
 	
 	@NotNull(message = "Account name must not be null")
 	@NotEmpty(message = "name may not be empty")
-	private String name;
+	private String nameAccount;
 	
 	@NotNull(message = "Account numberAccount must not be null")
 	@NotEmpty(message = "numberAccount may not be empty")
